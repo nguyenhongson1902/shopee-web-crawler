@@ -26,7 +26,7 @@ is written in OOP style so that it is easier to handle and develop more features
 ## Handling the Timeout Exception
 
 <p align="center">
-    <img src="images/handle_timeout_exception.png" width=40%>
+    <img src="images/handle_timeout_exception.png" width=100%>
 </p>
 <p align="center"><i>An algorithm to deal with the Timeout Exception.</i></p>
 
@@ -38,7 +38,7 @@ At this time, I've just shown an example of grabbing comments and stars from a c
 When you run this program, it'll take the amount of comments and stars depending on the hyperparameters.
 
 <p align="center">
-    <img src="images/an_example_result.png" width=40%>
+    <img src="images/an_example_result.png" width=100%>
 </p>
 <p align="center"><i>An example result.</i></p>
 
