@@ -8,7 +8,7 @@ is written in OOP style so that it is easier to handle and develop more features
 ## Installation
 * Run `pip install -r requirements.txt` to install all the packages you need
 * Main packages: `selenium`, `webdriver-manager`
-* To use `chromedriver` locally, we need to run command `xattr -d com.apple.quarantine chromedriver`
+* To use `chromedriver` locally in macOS, we need to run command `xattr -d com.apple.quarantine chromedriver`
 
 ## Development Environment
 * Python virtual environment: 
