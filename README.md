@@ -13,7 +13,7 @@ is written in OOP style so that it is easier to handle and develop more features
 ## Development Environment
 * Python virtual environment: 
     * Run `python3 -m venv <name of the virtual env>` (Python $3.10.0$) to create a new virtual environment
-    * Run `source ./venv/bin/activate` to activate the environment
+    * Run `source ./<name of the virtual env>/bin/activate` to activate the environment
 * macOS Ventura $13.0.1$
 * `chromedriver` version: $107.0.5304.62$ ([link](https://chromedriver.storage.googleapis.com/index.html?path=107.0.5304.62/))
 
