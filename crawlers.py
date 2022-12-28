@@ -1,24 +1,28 @@
 import selenium
 from selenium import webdriver # used to open chromedriver
-# from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.chrome import ChromeDriverManager 
 from selenium.webdriver.chrome.options import Options # options for chromedriver
 from selenium.webdriver.common.by import By # used to find element/elements by XPATH, CLASS_NAME, TAG_NAME,...
-# from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC # sets conditions on elements of a page
-# from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.keys import Keys
 
 import os # working with paths
 import time # calculates running time
 import json # saving, loading
 import ast # converts string representation of lists to list
 import pandas as pd # processes tables
+from cs50 import SQL
 
 
 # Hyperparameters
-PRODUCTS_PER_CATEGORY = 100 # For example, 100
+PRODUCTS_PER_CATEGORY = 10 # For example, 100
 COMMENTS_STARS_PER_PRODUCT = 10 # For example, 10
 DRIVER_PATH = './chromedriver' # for using local chromedriver
+
+# Configure CS50 Library to use SQLite database
+db = SQL("sqlite:///data.db")
 
 # class MasterCrawler():
 #     def __init__(self, headless) -> None:
@@ -76,6 +80,7 @@ class CategoryCrawler():
                 driver_options (Option): Options for chromedriver.
         """
         self.driver = webdriver.Chrome(options=driver_options, executable_path=DRIVER_PATH) # initialize a driver controlling Chrome
+        # self.driver = webdriver.Chrome(options=driver_options, service=Service(ChromeDriverManager().install()))
         self.driver.set_page_load_timeout(CategoryCrawler.MAX_WAITING_TIME) # timeout for loading a page
         self.driver.get(self.home_page) # opens the URL (home page)
 
@@ -92,12 +97,14 @@ class CategoryCrawler():
         """
         try:
             notification_xpath = '//*[@id="stardust-popover1"]/div'
-            # Wait until the 'Thông Báo' button is loaded
+            # Wait until the 'Thông Báo' button is loaded. It means that everything is successfully loaded.
             WebDriverWait(self.driver, CategoryCrawler.MAX_WAITING_TIME).until(EC.element_to_be_clickable((By.XPATH, notification_xpath)))
-
+            
+            # Run a JavaScript script to click on the close button on the banner
             close_button_script = 'return document.querySelector("#main shopee-banner-popup-stateful").shadowRoot.querySelector("div.home-popup__close-area div.shopee-popup__close-btn")'
             popup_close_button = self.driver.execute_script(close_button_script)
             popup_close_button.click()
+
             print('Close pop-up successfully.')
         except Exception as e:
             print(f'Exception "{e}" occurs when trying to click the pop-up close button. Program stopped!')
@@ -107,32 +114,52 @@ class CategoryCrawler():
         """
             Finding names (text) of categories, adding them to __categories_real_names
         """
-        categories_names_xpath = "//div[@class='section-category-list']//li/div/a/div/div[2]/div"
-        categories_names = self.driver.find_elements(by=By.XPATH, value=categories_names_xpath)
-        for name in categories_names:
-            if name.text:
-                self.__categories_real_names.append(name.text)
+        # categories_names_xpath = "//body/div[@id='main']/div/div/div[@class='xCao3k N2AB73']/div[@class='home-page']/div[@role='main']/div[@class='section-below-the-fold']/div[@class='_3yZ4VM']/div[@class='home-category-list']/div[@class='shopee-header-section shopee-header-section--simple']/div[@class='shopee-header-section__content']/div[@class='image-carousel']/div[@class='image-carousel__item-list-wrapper']/ul[@class='image-carousel__item-list']/li/div/a/div/div[2]/div"
+        # categories_names = self.driver.find_elements(by=By.XPATH, value=categories_names_xpath)
+        # # print([name.text for name in categories_names])
+        # for name in categories_names:
+        #     if name.text:
+        #         self.__categories_real_names.append(name.text)
         
-        categories_right_button_xpath = "//div[@class='section-category-list']//div[3]"
-        categories_right_button = self.driver.find_element(by=By.XPATH, value=categories_right_button_xpath)
-        if categories_right_button.is_displayed():
-            categories_right_button.click()
-            time.sleep(3) # sleeping for 3 seconds, waiting for elements to be loaded
-            categories_names = self.driver.find_elements(by=By.XPATH, value=categories_names_xpath)
-            for name in categories_names:
-                if name.text and (name.text not in self.__categories_real_names):
-                    self.__categories_real_names.append(name.text)
+        # categories_right_button_xpath = "//div[@class='_3yZ4VM']//div[3]"
+
+        # # categories_right_button = WebDriverWait(self.driver, 10).until(
+        # #     EC.element_to_be_clickable((By.XPATH, categories_right_button_xpath)))
+        # categories_right_button = self.driver.find_element(by=By.XPATH, value=categories_right_button_xpath)
+        # if categories_right_button.is_displayed():
+        #     # categories_right_button.click()
+        #     self.driver.execute_script("arguments[0].click();", categories_right_button)
+        #     time.sleep(3) # sleeping for 3 seconds, waiting for elements to be loaded
+        #     categories_names = self.driver.find_elements(by=By.XPATH, value=categories_names_xpath)
+        #     # print([name.text for name in categories_names])
         
+        #     for name in categories_names:
+        #         if name.text and (name.text not in self.__categories_real_names):
+        #             self.__categories_real_names.append(name.text)
         
+        self.__categories_real_names = ['Thời Trang Nam', 'Thời Trang Nữ', 'Điện Thoại & Phụ Kiện', 'Mẹ & Bé', 'Thiết Bị Điện Tử',
+                                        'Nhà Cửa & Đời Sống', 'Máy Tính & Laptop', 'Sắc Đẹp', 'Máy Ảnh & Máy Quay Phim', 'Sức Khỏe',
+                                        'Đồng Hồ', 'Giày Dép Nữ', 'Giày Dép Nam', 'Túi Ví Nữ', 'Thiết Bị Điện Gia Dụng', 'Phụ Kiện & Trang Sức Nữ',
+                                        'Thể Thao & Du Lịch', 'Bách Hóa Online', 'Ô Tô & Xe Máy & Xe Đạp', 'Nhà Sách Online',
+                                        'Balo & Túi Ví Nam', 'Thời Trang Trẻ Em', 'Đồ Chơi', 'Giặt Giũ & Chăm Sóc Nhà Cửa',
+                                        'Chăm Sóc Thú Cưng', 'Voucher & Dịch Vụ']
 
     def __find_categories_urls(self):
         """
-            Finding URLS of categories, adding them to categories_urls_dict
+            Finding URLs of categories, adding them to categories_urls_dict
         """
-        categories_urls_xpath = "//div[@class='section-category-list']//li/div/a"
+        categories_urls_xpath = "//body/div[@id='main']/div/div/div[@class='xCao3k N2AB73']/div[@class='home-page']/div[@role='main']/div[@class='section-below-the-fold']/div[@class='_3yZ4VM']/div[@class='home-category-list']/div[@class='shopee-header-section shopee-header-section--simple']/div[@class='shopee-header-section__content']/div[@class='image-carousel']/div[@class='image-carousel__item-list-wrapper']/ul[@class='image-carousel__item-list']/li/div/a"
         categories_urls = self.driver.find_elements(by=By.XPATH, value=categories_urls_xpath)
         for category_name, category_url in zip(self.__categories_real_names, categories_urls):
             CategoryCrawler.categories_urls_dict[category_name] = category_url.get_attribute('href')
+
+            # Add to database
+            try:
+                # print(type(category_name), type(category_url))
+                db.execute("INSERT INTO categories (name, url) VALUES (?, ?)", category_name, category_url.get_attribute('href'))
+                print("Added category name and url to database successfully")
+            except Exception as e:
+                print(f"{e} occured while inserting category name and url into database")
 
     def __save(self, filename):
         """
@@ -165,7 +192,7 @@ class CategoryCrawler():
 
             # Find all names of categories
             self.__find_categories_names()
-        
+
             # Find urls of all categories from the home page. Prepare for other crawlers
             self.__find_categories_urls()
             
@@ -332,6 +359,15 @@ class ProductCrawler():
             urls = self.__find_products_urls()
             self.product_urls[category_name] = urls # Add found urls to dictionary product_urls
 
+            # Add URLs of products to database
+            try:
+                row = db.execute("SELECT * FROM categories WHERE name=?", category_name)
+                for url_found in urls:
+                    db.execute("INSERT INTO products (url, category_id) VALUES(?, ?)", url_found, row[0]["id"])
+                print("Added logs of products to database succesfully")
+            except Exception as e:
+                print("f{} occured while running logs of URLs of products")
+
         self.__save_log_timeout(new_logs, log_file='log_timeout.json')
         
 
@@ -363,6 +399,16 @@ class ProductCrawler():
                 # Get all urls of products
                 urls = self.__find_products_urls()
                 self.product_urls[category_name] = urls # override categories URLs to products URLs found above
+
+                # Add URLs of products to database
+                try:
+                    row = db.execute("SELECT * FROM categories WHERE name=?", category_name)
+                    for url_found in urls:
+                        db.execute("INSERT INTO products (url, category_id) VALUES(?, ?)", url_found, row[0]["id"])
+                    print("Added products to database successfully")
+                except Exception as e:
+                    print("f{} occured while manipulating with URLs of products")
+                
             self.__save_log_timeout(logs, log_file='log_timeout.json')
             
             # Dealing with Timeout Exception
@@ -502,7 +548,7 @@ class CommentStarCrawler():
                 True if a comment exists, False otherwise.
         """
         try:
-            section.find_element(by=By.CLASS_NAME, value="_280jKz").find_elements(by=By.TAG_NAME, value='div')[-1]
+            section.find_element(by=By.CLASS_NAME, value="EXI9SU")
             return True
         except:
             return False
@@ -517,18 +563,21 @@ class CommentStarCrawler():
             self.driver.quit() # closes the driver window.
             return # do nothing when there is no ratings.
 
-        sections_xpath = "//body/div[@id='main']/div/div/div[@class='_3iHv4f']/div/div[@class='page-product']/div[@role='main']/div[@class='CKGyuW']/div[@class='page-product__content']/div[@class='page-product__content--left']/div/div[@class='product-ratings']/div[@class='product-ratings__list']/div[@class='shopee-product-comment-list']/div/div"
+        sections_xpath = "//div[@class='shopee-product-comment-list']/div"
         sections = self.driver.find_elements(by=By.XPATH, value=sections_xpath) # find sections
         for section in sections:
             count_stars = 0
             if self.__is_comment_existed(section):
-                comment = section.find_element(by=By.CLASS_NAME, value="_280jKz").find_elements(by=By.TAG_NAME, value='div')[-1].text
+                comment = section.find_element(by=By.CLASS_NAME, value="EXI9SU").text
                 self.comments.append(comment)
                 stars = section.find_element(by=By.CLASS_NAME, value="repeat-purchase-con").find_element(by=By.TAG_NAME, value='div').find_elements(by=By.TAG_NAME, value='svg')
                 for star in stars:
                     if star.get_attribute('class') == 'shopee-svg-icon icon-rating-solid--active icon-rating-solid':
                         count_stars += 1
                 self.stars.append(count_stars) # add stars to a list
+
+                if len(self.comments) == len(self.stars) and len(self.comments) > COMMENTS_STARS_PER_PRODUCT:
+                    break
         
         # Print to stdout
         print('comments:', len(self.comments))
@@ -594,7 +643,16 @@ class CommentStarCrawler():
                 self.driver.quit() # closes the driver window.
                 continue
 
-            self.__find_comments_stars()
+            self.__find_comments_stars() # update self.comments, self.stars
+
+            # Add comment, star pairs to database
+            try:
+                row = db.execute("SELECT * FROM products WHERE url=?", url)
+                for comment, star in zip(self.comments, self.stars):
+                    db.execute("INSERT INTO comments_stars (comment, stars, product_id) VALUES (?, ?, ?)", comment, star, row[0]["id"])
+                print("Added logs of comment, star pairs to database succesfully")
+            except Exception as e:
+                print(f"{e} occurred while running logs of comments and stars database")
 
         self.__save_log_urls(new_logs, filename='log_timeout.txt')
 
@@ -624,7 +682,16 @@ class CommentStarCrawler():
                     self.driver.quit()
                     continue
 
-                self.__find_comments_stars()
+                self.__find_comments_stars() # update self.comments, self.stars
+
+                # Add comment, star pairs to database
+                try:
+                    row = db.execute("SELECT * FROM products WHERE url=?", url)
+                    for comment, star in zip(self.comments, self.stars):
+                        db.execute("INSERT INTO comments_stars (comment, stars, product_id) VALUES (?, ?, ?)", comment, star, row[0]["id"])
+                    print("Added comment, star pairs to database succesfully")
+                except Exception as e:
+                    print(f"{e} occurred while manipulating with comments and stars database")
 
             # Handling timeout exception
             self.__save_log_urls(self.log_urls, filename='log_timeout.txt')
