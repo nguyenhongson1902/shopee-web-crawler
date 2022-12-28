@@ -6,7 +6,7 @@ each collected category. This project successfully handled the Timeout Exception
 is crashed, so the crawlers will run stably and not leave out the failed-to-load URLs. A database is designed to store all comments, stars as well as URLs. All of the code
 is written in OOP style so that it is easier to handle and develop more features.
 
-Video Demo:
+Video Demo: https://youtu.be/eGsTbn_w_Ys
 
 ## Installation
 
