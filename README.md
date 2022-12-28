@@ -27,6 +27,7 @@ Video Demo:
 1. Run the command `python main.py --category` to grab all URLs of categories
 2. Run `python main.py --product` to get all URLs of products of each category
 3. Run `python main.py --comment` to get all comments from products URLs
+4. Run `flask run` to run the web app for showing results
 
 ## Handling the Timeout Exception
 
