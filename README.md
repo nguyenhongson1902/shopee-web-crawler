@@ -55,6 +55,11 @@ Video Demo:
 
 2. Web view:
 
+<p align="center">
+  <img src="images/demo_result_web.png" width=100%>
+</p>
+<p align="center"><i>A web view demo.</i></p>
+
 3. When you run this program, it'll take the amount of comments and stars depending on the hyperparameters `PRODUCTS_PER_CATEGORY` and `COMMENTS_STARS_PER_PRODUCT`.
 
 ## Notes
