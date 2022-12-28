@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Shopee Web Crawler</title>
+  </head>
+  <body>
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="text-start">Comment</th>
+          <th class="text-end">Stars</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td class="text-start">{{ row.comment }}</td>
+          <td class="text-end">{{ row.stars }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>
