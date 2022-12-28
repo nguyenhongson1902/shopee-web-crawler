@@ -10,7 +10,7 @@ def main(args):
         shopee_home_page = 'https://shopee.vn/'
         category = CategoryCrawler(home_page=shopee_home_page, headless_option=True)
         category.get_categories()
-        print(CategoryCrawler.categories_urls_dict)
+        # print(CategoryCrawler.categories_urls_dict)
         end = time.time()
         print("Finish in {} minutes".format((end - start) / 60))
     elif args.product:
