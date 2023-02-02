@@ -1,6 +1,6 @@
 # Shopee Web Crawler
 
-This project aims to create a bot that can scrape comments, stars, and URLs from Shopee products. To do this, the bot collects URLs of categories from the homepage, and then URLs of products from each of these categories. This project has been designed to handle Timeout Exceptions when loading URLs, ensuring that the crawlers run stably and that no URLs are left out. A database has been set up to store the collected comments, stars, and URLs. All of the code has been written in an object-oriented programming style in order to make it easier to manage and develop additional features.
+This project aims to create a bot that can scrape comments, stars, and URLs from ![Shopee](https://shopee.vn/) products. To do this, the bot collects URLs of categories from the homepage, and then URLs of products from each of these categories. This project has been designed to handle Timeout Exceptions when loading URLs, ensuring that the crawlers run stably and that no URLs are left out. A database has been set up to store the collected comments, stars, and URLs. All of the code has been written in an object-oriented programming style in order to make it easier to manage and develop additional features.
 
 Video Demo: https://youtu.be/eGsTbn_w_Ys
 
